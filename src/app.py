@@ -10,6 +10,9 @@ from watchdog.events import RegexMatchingEventHandler
 
 username = getpass.getuser()
 
+source_dwl = '/home/'+username+'/Downloads/'
+destination_dwl = '/home/'+username+'/Downloads_opt/'
+
 class TxtEventHandler(RegexMatchingEventHandler):
 
     IMAGES_REGEX = [r".*\.txt$"]
@@ -29,8 +32,7 @@ class TxtEventHandler(RegexMatchingEventHandler):
         just_name = filename.split("/").pop(-1)
         destination = 'home/'+username+'/Downloads_opt/txt/'+just_name
 
-        shutil.move(source, destination)
-        #os.rename(source, destination)
+        os.rename(source_dwl+actual_name, destination_dwl+actual_name)
 
 
 
