@@ -8,7 +8,9 @@ from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 from watchdog.events import RegexMatchingEventHandler
 
-class ImageEventHandler(RegexMatchingEventHandler):
+username = getpass.getuser()
+
+class TxtEventHandler(RegexMatchingEventHandler):
 
     IMAGES_REGEX = [r".*\.txt$"]
 
@@ -20,9 +22,16 @@ class ImageEventHandler(RegexMatchingEventHandler):
 
     def process(self, event):
         filename, ext = os.path.splitext(event.src_path)
-        filename = f"{filename}_alguma_coisa_processada.txt"
+        actual_name = filename.split("/").pop(-1)+ext
 
-        print(filename)
+        source = filename+ext
+        filename = f"{filename}_alguma_coisa_processada.txt"
+        just_name = filename.split("/").pop(-1)
+        destination = 'home/'+username+'/Downloads_opt/txt/'+just_name
+
+        shutil.move(source, destination)
+        #os.rename(source, destination)
+
 
 
 if __name__ == "__main__":
@@ -31,24 +40,24 @@ if __name__ == "__main__":
                         datefmt='%Y-%m-%d %H:%M:%S')
 
     #find the downloads folder authomatcally
-    username = getpass.getuser()
+
     downloads_folder = '/home/'+username+'/Downloads'
     path = sys.argv[1] if len(sys.argv) > 1 else '.'
     path = downloads_folder
     # ---------------------------------------
 
-    #handlers
+    #handlers_2
     event_handler = LoggingEventHandler()
-    coisado = ImageEventHandler()
+    txt_handler = TxtEventHandler()
     #-----------
 
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
 
-    observer2 = Observer()
-    observer2.schedule(coisado,path, recursive=True)
-    observer2.start()
+    observer3 = Observer()
+    observer3.schedule(txt_handler, path, recursive=True)
+    observer3.start()
 
     try:
         while True:
